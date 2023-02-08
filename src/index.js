@@ -1,9 +1,16 @@
+const http=require('http');
 require('dotenv').config()
 const {Telegraf} = require('telegraf')
 const bot = new Telegraf(process.env.token)
 const birthdays = require('./birthdays.json')
 const holidays = require('./holidays.json')
-
+const hostname='0.0.0.0'
+const port=3000;
+const server = http.createServer((req,res)=>{
+  res.statusCode=200;
+  res.setHeader('Content-type','text/plain');
+  res.end('Hello world')
+})
 bot.start((ctx) => {
   const chatId = ctx.chat.id
   const userName = ctx.chat.last_name
@@ -58,5 +65,7 @@ setInterval(() => {
     bot.telegram.sendMessage(-1001434326296, `Hey, today is ${birthday.name}'s Birthday! 🎂`)
   })
 }, 24 * 60 * 60 * 1000)
-
+server.listen(port,hostname,()=>{
+  console.log(`server running at http://${hostname}:${port}/`)
+});
 bot.launch()
